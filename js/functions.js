@@ -1,6 +1,8 @@
-function validateStringLength(string ='', length = 1) {
+function validateStringLength(string = '', length = 1) {
   return string.length <= length;
 }
+
+validateStringLength ('проверяемая строка', 10);
 
 function isPalidrome (string = '') {
   string = string.replaceAll(' ','').toLowerCase();
@@ -10,3 +12,5 @@ function isPalidrome (string = '') {
   }
   return string === reversedString;
 }
+
+isPalidrome('Лёша на полке клопа нашёл ');
