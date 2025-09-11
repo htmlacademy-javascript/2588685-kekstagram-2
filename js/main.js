@@ -22,9 +22,6 @@ const MAX_ID_USER = 1000;
 const MIN_ID_AVATAR = 1;
 const MAX_ID_AVATAR = 6;
 
-const MIN_MESSAGE_NUMBER = 1;
-const MAX_MESSAGE_NUMBER = 2;
-
 const MESSAGES = [
   'Всё отлично!',
   'В целом всё неплохо. Но не всё.',
@@ -64,44 +61,30 @@ function createRandomIdFromRangeGenerator (min, max) {
   };
 }
 
-//Создаем комментарии
+//Создание комментариев
 //Функция для генерации id комментаторов
 const generateUniqueId = createRandomIdFromRangeGenerator(MIN_ID_USER, MAX_ID_USER);
 
-//Функция для создания сообщения в комментарий
-function createRandomMessage() {
-  const numberSentence = getRandomInteger(MIN_MESSAGE_NUMBER, MAX_MESSAGE_NUMBER);
-  const copiedMessages = [...MESSAGES];
-  const chosenMessages = [];
-
-  for (let i = 0; i < numberSentence; i++) {
-    const randomIndex = getRandomInteger(0, copiedMessages.length - 1);
-    chosenMessages.push(copiedMessages.splice(randomIndex, 1)[0]);
-  }
-
-  return chosenMessages.join(' ');
+//Создание аватара
+function createRandomAvatar() {
+  return `img/avatar-${getRandomInteger(MIN_ID_AVATAR, MAX_ID_AVATAR)}.svg`;
 }
 
-//Функция для создания комментариев
+//Создание комментариев
 function createComment() {
   return {
     id: generateUniqueId(),
-    avatar: `img/avatar-${getRandomInteger(MIN_ID_AVATAR, MAX_ID_AVATAR)}.svg`,
-    message: createRandomMessage(),
-    name: NAMES[getRandomInteger(0, NAMES.length - 1)]
+    avatar: createRandomAvatar(),
+    message: NAMES[getRandomInteger(0, NAMES.length - 1)],
+    name: MESSAGES[getRandomInteger(0, MESSAGES.length - 1)]
   };
 }
 
-//Функция для создания массива комментариев для фото
+//Создание массива комментариев для фото
 function createCommentsForPhoto() {
   const commentsCount = getRandomInteger(MIN_COMMENT, MAX_COMMENT);
 
   return Array.from({ length: commentsCount }, () => createComment());
-}
-
-//Функция для создания рандомного описания к фотографии
-function createRandomDescription() {
-  return PHOTO_DESCRIPTIONS[getRandomInteger(0, PHOTO_DESCRIPTIONS.length - 1)];
 }
 
 //Создание объектов фотографий
@@ -109,7 +92,7 @@ function createPhoto(id) {
   return {
     id: id,
     url: `photos/${id}.jpg`,
-    description: createRandomDescription(),
+    description: PHOTO_DESCRIPTIONS[getRandomInteger(0, PHOTO_DESCRIPTIONS.length - 1)],
     likes: getRandomInteger(MIN_LIKES, MAX_LIKES),
     comments: createCommentsForPhoto()
   };
