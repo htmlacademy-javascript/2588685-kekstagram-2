@@ -1,5 +1,5 @@
-import { getRandomInteger, createRandomIdFromRangeGenerator } from "./utils.js";
-import { PHOTO_DESCRIPTIONS, MESSAGES, NAMES } from "./data.js";
+import { getRandomInteger, createRandomIdFromRangeGenerator } from './utils.js';
+import { PHOTO_DESCRIPTIONS, MESSAGES, NAMES } from './data.js';
 
 const NUM_PHOTO = 25;
 
