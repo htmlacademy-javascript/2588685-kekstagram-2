@@ -1,4 +1,4 @@
 import { photos } from './generate-photos.js';
-import { renderPictures } './thumbnails.js';
+import { renderPictures } from './thumbnails.js';
 
 renderPictures(photos);
