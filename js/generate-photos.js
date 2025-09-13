@@ -29,8 +29,8 @@ function createComment() {
   return {
     id: generateUniqueId(),
     avatar: createRandomAvatar(),
-    message: NAMES[getRandomInteger(0, NAMES.length - 1)],
-    name: MESSAGES[getRandomInteger(0, MESSAGES.length - 1)]
+    message: MESSAGES[getRandomInteger(0, MESSAGES.length - 1)],
+    name: NAMES[getRandomInteger(0, NAMES.length - 1)]
   };
 }
 
@@ -57,6 +57,6 @@ function generatePhotosArray() {
   let id = 1;
   return Array.from({ length: NUM_PHOTO }, () => createPhoto(id++));
 }
-
 const photos = generatePhotosArray();
+
 export { photos };
