@@ -1,3 +1,4 @@
 import { photos } from './generate-photos.js';
+import { renderPictures } from './thumbnails.js';
 
-window.console.log(photos);
+renderPictures(photos);
