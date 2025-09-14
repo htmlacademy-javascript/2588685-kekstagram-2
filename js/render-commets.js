@@ -1,13 +1,15 @@
 const COUNT_STEP = 5;
+
+const bigPictureContainer = document.querySelector('.big-picture');
+const socialCommentsContainer = bigPictureContainer.querySelector('.social__comments');
+const socialCommentTemplate = bigPictureContainer.querySelector('.social__comment');
+const commentsLoader = bigPictureContainer.querySelector('.comments-loader');
+const commentShownCountText = bigPictureContainer.querySelector('.social__comment-shown-count');
+const commentsTotalCountText = bigPictureContainer.querySelector('.social__comment-total-count');
+
 let currentCount = 0;
 let comments = [];
 
-const bigPictureContainer = document.querySelector('.big-picture'); //Контейнер с окном
-const socialCommentsContainer = bigPictureContainer.querySelector('.social__comments'); //Контейнер с комм
-const socialCommentTemplate = bigPictureContainer.querySelector('.social__comment'); //Шаблон с комм
-const commentsLoader = bigPictureContainer.querySelector('.comments-loader'); //Блок для загрузки комм
-const commentShownCountText = bigPictureContainer.querySelector('.social__comment-shown-count'); //Количество показанных комм
-const commentsTotalCountText = bigPictureContainer.querySelector('.social__comment-total-count'); //Количество всех комм
 socialCommentsContainer.innerHTML = '';
 
 const renderNextComments = () => {
@@ -28,27 +30,29 @@ const renderNextComments = () => {
 
   socialCommentsContainer.append(commentsFragment);
   commentShownCountText.textContent = renderedCommentsLength;
-  commentsTotalCountText.textContent = comments.length;
 
-  if (renderedCommentsLength >= comments.length) {
-    commentsLoader.classList.add('hidden');
-  }
+  commentsLoader.classList.toggle('hidden',renderedCommentsLength >= comments.length);
 
   currentCount += COUNT_STEP;
 };
+
+function onCommentsLoaderClick() {
+  renderNextComments();
+}
 
 const clearComments = () => {
   currentCount = 0;
   socialCommentsContainer.innerHTML = '';
   commentsLoader.classList.remove('hidden');
-  commentsLoader.removeEventListener('click', renderNextComments)
+  commentsLoader.removeEventListener('click', onCommentsLoaderClick);
 };
 
 const renderComments = (currentPhotoComments) => {
   comments = currentPhotoComments;
   renderNextComments();
+  commentsTotalCountText.textContent = comments.length;
 
-  commentsLoader.addEventListener('click', renderNextComments);
+  commentsLoader.addEventListener('click', onCommentsLoaderClick);
 };
 
 export { clearComments, renderComments };
