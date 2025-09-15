@@ -1,5 +1,6 @@
 import { photos } from './generate-photos.js';
 import { clearComments, renderComments } from './render-commets.js';
+import { isEscapeKey } from './utils.js';
 
 const bigPictureContainer = document.querySelector('.big-picture');
 const bigPictureCancel = bigPictureContainer.querySelector('.big-picture__cancel');
@@ -9,7 +10,8 @@ const onBigPictureCancelClick = () => {
 };
 
 const onDocumentEscKeydown = (evt) => {
-  if (evt.key === 'Escape' || evt.key === 'Esc') {
+  if (isEscapeKey(evt)) {
+    evt.preventDefault();
     closeBigPicture();
   }
 };
