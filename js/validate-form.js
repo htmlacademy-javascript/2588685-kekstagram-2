@@ -25,6 +25,12 @@ const onDocumentEscPress = (evt) => {
 
 const validateCommentLength = (value) => value.length <= MAX_COMMENT_LENGTH;
 
+const pristine = new Pristine(imgUploadForm, {
+  classTo: 'img-upload__field-wrapper',
+  errorClass: 'img-upload__field-wrapper--error',
+  errorTextParent: 'img-upload__field-wrapper',
+});
+
 function onImgUploadCancelClick() {
   closeImgUpload();
 }
@@ -50,12 +56,6 @@ function onImgUploadChange() {
 }
 
 imgUploadInput.addEventListener('change', onImgUploadChange);
-
-const pristine = new Pristine(imgUploadForm, {
-  classTo: 'img-upload__field-wrapper',
-  errorClass: 'img-upload__field-wrapper--error',
-  errorTextParent: 'img-upload__field-wrapper',
-});
 
 pristine.addValidator(hashtagInput, validateHashtags, getHashtagErrorMessage);
 
