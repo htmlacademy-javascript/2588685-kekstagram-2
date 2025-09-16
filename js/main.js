@@ -2,6 +2,7 @@ import { photos } from './generate-photos.js';
 import { openBigPicture } from './render-big-pictures.js';
 import { picturesContainer, renderPictures } from './render-thumbnails.js';
 import './validate-form.js';
+import './edit-picture.js';
 
 renderPictures(photos);
 

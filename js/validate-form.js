@@ -1,5 +1,6 @@
 import { isEscapeKey } from './utils.js';
 import { validateHashtags, getHashtagErrorMessage } from './check-hashtag-validity.js';
+import { resetEdition } from './edit-picture.js';
 
 const MAX_COMMENT_LENGTH = 140;
 
@@ -36,6 +37,7 @@ function closeImgUpload() {
   document.body.classList.remove('modal-open');
 
   imgUploadInput.value = '';
+  resetEdition();
 }
 
 function onImgUploadChange() {
