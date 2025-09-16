@@ -1,5 +1,6 @@
 import { isEscapeKey } from './utils.js';
 import { validateHashtags, getHashtagErrorMessage } from './check-hashtag-validity.js';
+import { resetEdition } from './edit-picture.js';
 
 const MAX_COMMENT_LENGTH = 140;
 
@@ -24,6 +25,12 @@ const onDocumentEscPress = (evt) => {
 
 const validateCommentLength = (value) => value.length <= MAX_COMMENT_LENGTH;
 
+const pristine = new Pristine(imgUploadForm, {
+  classTo: 'img-upload__field-wrapper',
+  errorClass: 'img-upload__field-wrapper--error',
+  errorTextParent: 'img-upload__field-wrapper',
+});
+
 function onImgUploadCancelClick() {
   closeImgUpload();
 }
@@ -36,6 +43,8 @@ function closeImgUpload() {
   document.body.classList.remove('modal-open');
 
   imgUploadInput.value = '';
+  resetEdition();
+  pristine.reset();
 }
 
 function onImgUploadChange() {
@@ -48,15 +57,9 @@ function onImgUploadChange() {
 
 imgUploadInput.addEventListener('change', onImgUploadChange);
 
-const pristine = new Pristine(imgUploadForm, {
-  classTo: 'img-upload__field-wrapper',
-  errorClass: 'img-upload__field-wrapper--error',
-  errorTextParent: 'img-upload__field-wrapper',
-});
-
 pristine.addValidator(hashtagInput, validateHashtags, getHashtagErrorMessage);
 
-pristine.addValidator (commentInput, validateCommentLength, `Комментарий не может быть длиннее ${MAX_COMMENT_LENGTH} символов`);
+pristine.addValidator(commentInput, validateCommentLength, `Комментарий не может быть длиннее ${MAX_COMMENT_LENGTH} символов`);
 
 imgUploadForm.addEventListener('submit', (evt) => {
   if (!pristine.validate()) {
