@@ -18,11 +18,6 @@ const effectRadio = document.querySelectorAll('.effects__radio');
 let imgScale = DEFAULT_SCALE;
 let currentEffectHandler = null;
 
-const resizeImgPreview = (scale) => {
-  imgPreview.style.transform = `scale(${scale})`;
-  scaleInput.value = `${scale * 100}%`;
-};
-
 const resetEdition = () => {
   scaleInput.value = `${imgScale * 100}%`;
 
@@ -33,19 +28,23 @@ const resetEdition = () => {
   effectLevelContainer.classList.add('hidden');
 };
 
-scaleButtonSmaller.addEventListener('click', () => {
-  if (imgScale > MIN_SCALE) {
-    imgScale -= SCALE_STEP;
-    resizeImgPreview(imgScale);
-  }
-});
+const resizeImgPreview = (scale) => {
+  imgPreview.style.transform = `scale(${scale})`;
+  scaleInput.value = `${scale * 100}%`;
+};
 
-scaleButtonBigger.addEventListener('click', () => {
-  if (imgScale < MAX_SCALE) {
-    imgScale += SCALE_STEP;
+const changeScale = (delta) => {
+  const newScale = imgScale + delta * SCALE_STEP;
+
+  if (newScale >= MIN_SCALE && newScale <= MAX_SCALE) {
+    imgScale = newScale;
     resizeImgPreview(imgScale);
   }
-});
+};
+
+scaleButtonSmaller.addEventListener('click', () => changeScale(-1));
+
+scaleButtonBigger.addEventListener('click', () => changeScale(1));
 
 effectLevelContainer.classList.add('hidden');
 

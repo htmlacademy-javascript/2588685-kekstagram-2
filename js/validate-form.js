@@ -38,6 +38,7 @@ function closeImgUpload() {
 
   imgUploadInput.value = '';
   resetEdition();
+  pristine.reset();
 }
 
 function onImgUploadChange() {
@@ -58,7 +59,7 @@ const pristine = new Pristine(imgUploadForm, {
 
 pristine.addValidator(hashtagInput, validateHashtags, getHashtagErrorMessage);
 
-pristine.addValidator (commentInput, validateCommentLength, `Комментарий не может быть длиннее ${MAX_COMMENT_LENGTH} символов`);
+pristine.addValidator(commentInput, validateCommentLength, `Комментарий не может быть длиннее ${MAX_COMMENT_LENGTH} символов`);
 
 imgUploadForm.addEventListener('submit', (evt) => {
   if (!pristine.validate()) {
