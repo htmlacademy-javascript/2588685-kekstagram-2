@@ -22,7 +22,7 @@ const showMessage = (templateId, closeButtonSelector) => {
     if (isEscapeKey(evt)) {
       removeMessage();
     }
-  };
+  }
 
   const onClickOutside = (evt) => {
     if (!evt.target.closest(templateId.slice(1))) {
@@ -89,7 +89,9 @@ const toggleSubmitButton = (state) => {
 imgUploadForm.addEventListener('submit', (evt) => {
   evt.preventDefault();
 
-  if (!pristine.validate()) return;
+  if (!pristine.validate()) {
+    return;
+  }
 
   toggleSubmitButton(true);
   const formData = new FormData(evt.target);
