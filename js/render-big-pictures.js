@@ -1,9 +1,10 @@
-import { photos } from './generate-photos.js';
-import { clearComments, renderComments } from './render-commets.js';
+import { clearComments, renderComments } from './render-comments.js';
 import { isEscapeKey } from './utils.js';
 
 const bigPictureContainer = document.querySelector('.big-picture');
 const bigPictureCancel = bigPictureContainer.querySelector('.big-picture__cancel');
+
+let photosData = [];
 
 const onBigPictureCancelClick = () => {
   closeBigPicture();
@@ -16,6 +17,10 @@ const onDocumentEscKeydown = (evt) => {
   }
 };
 
+const setPhotos = (photos) => {
+  photosData = photos;
+};
+
 function closeBigPicture() {
   clearComments();
 
@@ -26,7 +31,10 @@ function closeBigPicture() {
 }
 
 function openBigPicture(pictureId) {
-  const currentPhoto = photos.find((photo) => photo.id === Number(pictureId));
+  const currentPhoto = photosData.find((photo) => photo.id === Number(pictureId));
+  if (!currentPhoto) {
+    return;
+  }
 
   bigPictureContainer.querySelector('.big-picture__img img').src = currentPhoto.url;
   bigPictureContainer.querySelector('.likes-count').textContent = currentPhoto.likes;
@@ -40,4 +48,4 @@ function openBigPicture(pictureId) {
   document.addEventListener('keydown', onDocumentEscKeydown);
 }
 
-export { openBigPicture };
+export { openBigPicture, setPhotos };
