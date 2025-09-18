@@ -1,6 +1,5 @@
 import { resetEdition } from './edit-picture.js';
 import { sendData } from './api.js';
-import { isEscapeKey } from './utils.js';
 import { pristine, imgUploadForm, hashtagInput, commentInput } from './validate-form.js';
 
 const imgUploadInput = imgUploadForm.querySelector('.img-upload__input');
@@ -8,8 +7,10 @@ const imgUploadOverlay = imgUploadForm.querySelector('.img-upload__overlay');
 const imgUploadCancel = imgUploadForm.querySelector('.img-upload__cancel');
 const submitButton = imgUploadForm.querySelector('#upload-submit');
 
+const isEscapeKey = (evt) => evt.key === 'Escape';
+
 const showMessage = (templateId, closeButtonSelector) => {
-  const template = document.querySelector(templateId).content.querySelector(templateId.slice(1));
+  const template = document.querySelector(templateId).content.querySelector(`.${templateId.slice(1)}`);
   const message = template.cloneNode(true);
   const closeButton = message.querySelector(closeButtonSelector);
 
@@ -25,7 +26,7 @@ const showMessage = (templateId, closeButtonSelector) => {
   }
 
   const onClickOutside = (evt) => {
-    if (!evt.target.closest(templateId.slice(1))) {
+    if (!evt.target.closest(`.${templateId.slice(1)}`)) {
       removeMessage();
     }
   };
@@ -56,9 +57,17 @@ const onDocumentEscPress = (evt) => {
   }
 };
 
-function onImgUploadCancelClick() {
+const onImgUploadCancelClick = () => {
   closeImgUpload();
-}
+};
+
+const onImgUploadChange = () => {
+  imgUploadCancel.addEventListener('click', onImgUploadCancelClick);
+  document.addEventListener('keydown', onDocumentEscPress);
+
+  imgUploadOverlay.classList.remove('hidden');
+  document.body.classList.add('modal-open');
+};
 
 function closeImgUpload() {
   imgUploadCancel.removeEventListener('click', onImgUploadCancelClick);
@@ -70,14 +79,6 @@ function closeImgUpload() {
   imgUploadInput.value = '';
   resetEdition();
   pristine.reset();
-}
-
-function onImgUploadChange() {
-  imgUploadCancel.addEventListener('click', onImgUploadCancelClick);
-  document.addEventListener('keydown', onDocumentEscPress);
-
-  imgUploadOverlay.classList.remove('hidden');
-  document.body.classList.add('modal-open');
 }
 
 imgUploadInput.addEventListener('change', onImgUploadChange);
@@ -97,8 +98,8 @@ imgUploadForm.addEventListener('submit', (evt) => {
   const formData = new FormData(evt.target);
   sendData(formData)
     .then(() => {
-      closeImgUpload();
       showSuccessMessage();
+      closeImgUpload();
     })
     .catch(() => {
       showErrorMessage();
@@ -107,3 +108,5 @@ imgUploadForm.addEventListener('submit', (evt) => {
       toggleSubmitButton(false);
     });
 });
+
+export { showSuccessMessage };

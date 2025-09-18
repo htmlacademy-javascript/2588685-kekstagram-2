@@ -5,6 +5,9 @@ import './validate-form.js';
 import './handle-form.js';
 import './edit-picture.js';
 
+import { showSuccessMessage } from './handle-form.js';
+window.showSuccessMessage = showSuccessMessage;
+
 const showDataError = () => {
   const errorTemplate = document.querySelector('#data-error').content.querySelector('.data-error');
   const errorMessage = errorTemplate.cloneNode(true);
