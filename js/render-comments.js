@@ -4,18 +4,18 @@ const bigPictureContainer = document.querySelector('.big-picture');
 const socialCommentsContainer = bigPictureContainer.querySelector('.social__comments');
 const socialCommentTemplate = bigPictureContainer.querySelector('.social__comment');
 const commentsLoader = bigPictureContainer.querySelector('.comments-loader');
-const commentShownCountText = bigPictureContainer.querySelector('.social__comment-shown-count');
-const commentsTotalCountText = bigPictureContainer.querySelector('.social__comment-total-count');
+const commentShownCount = bigPictureContainer.querySelector('.social__comment-shown-count');
+const commentsTotalCount = bigPictureContainer.querySelector('.social__comment-total-count');
 
-let currentCount = 0;
+let currentCommentCount = 0;
 let comments = [];
 
 socialCommentsContainer.innerHTML = '';
 
 const renderNextComments = () => {
   const commentsFragment = document.createDocumentFragment();
-  const renderedComments = comments.slice(currentCount, currentCount + COUNT_STEP);
-  const renderedCommentsLength = renderedComments.length + currentCount;
+  const renderedComments = comments.slice(currentCommentCount, currentCommentCount + COUNT_STEP);
+  const renderedCommentsLength = renderedComments.length + currentCommentCount;
 
   renderedComments.forEach(({ avatar, message, name }) => {
     const comment = socialCommentTemplate.cloneNode(true);
@@ -29,11 +29,11 @@ const renderNextComments = () => {
   });
 
   socialCommentsContainer.append(commentsFragment);
-  commentShownCountText.textContent = renderedCommentsLength;
+  commentShownCount.textContent = renderedCommentsLength;
 
-  commentsLoader.classList.toggle('hidden',renderedCommentsLength >= comments.length);
+  commentsLoader.classList.toggle('hidden', renderedCommentsLength >= comments.length);
 
-  currentCount += COUNT_STEP;
+  currentCommentCount += COUNT_STEP;
 };
 
 function onCommentsLoaderClick() {
@@ -41,7 +41,7 @@ function onCommentsLoaderClick() {
 }
 
 const clearComments = () => {
-  currentCount = 0;
+  currentCommentCount = 0;
   socialCommentsContainer.innerHTML = '';
   commentsLoader.classList.remove('hidden');
   commentsLoader.removeEventListener('click', onCommentsLoaderClick);
@@ -50,7 +50,7 @@ const clearComments = () => {
 const renderComments = (currentPhotoComments) => {
   comments = currentPhotoComments;
   renderNextComments();
-  commentsTotalCountText.textContent = comments.length;
+  commentsTotalCount.textContent = comments.length;
 
   commentsLoader.addEventListener('click', onCommentsLoaderClick);
 };
