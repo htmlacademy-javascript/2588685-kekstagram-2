@@ -104,7 +104,7 @@ const toggleSubmitButton = (isSending) => {
   submitButton.textContent = isSending ? SubmitButtonText.SENDING : SubmitButtonText.IDLE;
 };
 
-imgUploadForm.addEventListener('submit', (evt) => {
+/* imgUploadForm.addEventListener('submit', (evt) => {
   evt.preventDefault();
 
   if (!pristine.validate()) {
@@ -124,6 +124,29 @@ imgUploadForm.addEventListener('submit', (evt) => {
     .finally(() => {
       toggleSubmitButton(false);
     });
+});
+*/
+
+imgUploadForm.addEventListener('submit', async (evt) => {
+  evt.preventDefault();
+
+  if (!pristine.validate()) {
+    return;
+  }
+
+  toggleSubmitButton(true);
+  const formData = new FormData(evt.target);
+
+  try {
+    await sendData(formData);
+    showSuccessMessage();
+    closeImgUpload();
+  } catch (error) {
+    window.console.error('Ошибка при отправке данных', error.message);
+    showErrorMessage();
+  } finally {
+    toggleSubmitButton(false);
+  }
 });
 
 export { showSuccessMessage };

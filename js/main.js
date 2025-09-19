@@ -19,7 +19,7 @@ const showDataError = () => {
   }, 5000);
 };
 
-getData()
+/*getData()
   .then((photos) => {
     renderPictures(photos);
     setPhotos(photos);
@@ -27,6 +27,20 @@ getData()
   .catch(() => {
     showDataError();
   });
+*/
+
+const init = async () => {
+  try {
+    const photos = await getData();
+    renderPictures(photos);
+    setPhotos(photos);
+  } catch (error) {
+    window.console.error('Ошибка при загрузке данных:', error.message);
+    showDataError();
+  }
+};
+
+init();
 
 picturesContainer.addEventListener('click', (evt) => {
   const currentPicture = evt.target.closest('.picture');
