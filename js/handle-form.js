@@ -20,8 +20,8 @@ const showMessage = (templateId, closeButtonSelector) => {
   const message = template.cloneNode(true);
   const closeButton = message.querySelector(closeButtonSelector);
 
-  const onClickOutside = (evt) => {
-    if (!evt.target.closest(`.${templateId.slice(1)}`)) {
+  const onDocumentClick = (evt) => {
+    if (evt.target === message) {
       removeMessage();
     }
   };
@@ -30,11 +30,11 @@ const showMessage = (templateId, closeButtonSelector) => {
     isMessageOpen = false;
 
     message.remove();
-    document.removeEventListener('keydown', onEscPress);
-    document.removeEventListener('click', onClickOutside);
+    document.removeEventListener('keydown', onDocumentEscKeydown);
+    document.removeEventListener('click', onDocumentClick);
   }
 
-  function onEscPress(evt) {
+  function onDocumentEscKeydown(evt) {
     if (isEscapeKey(evt)) {
       evt.stopPropagation();
       removeMessage();
@@ -46,12 +46,11 @@ const showMessage = (templateId, closeButtonSelector) => {
   };
 
   closeButton.addEventListener('click', onCloseButtonClick);
-  document.addEventListener('keydown', onEscPress);
-  document.addEventListener('click', onClickOutside);
-
-  isMessageOpen = true;
+  document.addEventListener('keydown', onDocumentEscKeydown);
+  document.addEventListener('click', onDocumentClick);
 
   document.body.append(message);
+  isMessageOpen = true;
 };
 
 const showSuccessMessage = () => showMessage('#success', '.success__button');
@@ -139,8 +138,8 @@ imgUploadForm.addEventListener('submit', async (evt) => {
 
   try {
     await sendData(formData);
-    showSuccessMessage();
     closeImgUpload();
+    showSuccessMessage();
   } catch (error) {
     window.console.error('Ошибка при отправке данных', error.message);
     showErrorMessage();
