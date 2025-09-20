@@ -1,4 +1,65 @@
-import { EFFECTS } from './data.js';
+const EFFECTS = {
+  none: {
+    filter: '',
+    range: {
+      min: 0,
+      max: 1,
+    },
+    start: 1,
+    step: 0.1,
+    unit: '',
+  },
+  chrome: {
+    filter: 'grayscale',
+    range: {
+      min: 0,
+      max: 1,
+    },
+    start: 1,
+    step: 0.1,
+    unit: '',
+  },
+  sepia: {
+    filter: 'sepia',
+    range: {
+      min: 0,
+      max: 1,
+    },
+    start: 1,
+    step: 0.1,
+    unit: '',
+  },
+  marvin: {
+    filter: 'invert',
+    range: {
+      min: 0,
+      max: 100,
+    },
+    start: 100,
+    step: 1,
+    unit: '%',
+  },
+  phobos: {
+    filter: 'blur',
+    range: {
+      min: 0,
+      max: 3,
+    },
+    start: 3,
+    step: 0.1,
+    unit: 'px',
+  },
+  heat: {
+    filter: 'brightness',
+    range: {
+      min: 1,
+      max: 3,
+    },
+    start: 3,
+    step: 0.1,
+    unit: '',
+  },
+};
 
 const SCALE_STEP = 0.25;
 const MAX_SCALE = 1;
@@ -16,7 +77,13 @@ const effectLevelValue = effectLevelContainer.querySelector('.effect-level__valu
 const effectRadio = document.querySelectorAll('.effects__radio');
 
 let imgScale = DEFAULT_SCALE;
-let currentEffectHandler = null;
+let effect = EFFECTS['none'];
+
+const currentEffectHandler = () => {
+  const value = effectSlider.noUiSlider.get();
+  effectLevelValue.value = value;
+  imgPreview.style.filter = `${effect.filter}(${value}${effect.unit})`;
+};
 
 const resetEdition = () => {
   scaleInput.value = `${imgScale * 100}%`;
@@ -63,11 +130,14 @@ noUiSlider.create(effectSlider, {
   },
 });
 
-const applyEffect = (effectName) => {
-  const effect = EFFECTS[effectName];
+effectSlider.noUiSlider.on('update', currentEffectHandler);
 
-  if (!effect || effectName === 'none') {
+const onEffectChange = (evt) => {
+  effect = EFFECTS[evt.target.value];
+
+  if (!effect || evt.target.value === 'none') {
     imgPreview.style.filter = 'none';
+    effectLevelValue.value = '';
     effectLevelContainer.classList.add('hidden');
     return;
   }
@@ -79,24 +149,8 @@ const applyEffect = (effectName) => {
   });
 
   effectLevelContainer.classList.remove('hidden');
-
-  effectSlider.noUiSlider.off('update');
-
-  currentEffectHandler = () => {
-    const value = effectSlider.noUiSlider.get();
-    effectLevelValue.value = value;
-    imgPreview.style.filter = `${effect.filter}(${value}${effect.unit})`;
-  };
-
-  effectSlider.noUiSlider.on('update', currentEffectHandler);
-
   imgPreview.style.filter = `${effect.filter}(${effect.start}${effect.unit})`;
   effectLevelValue.value = effect.start;
-};
-
-const onEffectChange = (evt) => {
-  const effectName = evt.target.value;
-  applyEffect(effectName);
 };
 
 effectRadio.forEach((radioButton) => {

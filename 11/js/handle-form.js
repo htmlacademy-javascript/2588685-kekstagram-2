@@ -1,50 +1,66 @@
 import { resetEdition } from './edit-picture.js';
 import { sendData } from './api.js';
-import { isEscapeKey } from './utils.js';
 import { pristine, imgUploadForm, hashtagInput, commentInput } from './validate-form.js';
+import { isEscapeKey } from './utils.js';
+
+const SubmitButtonText = {
+  IDLE: 'Опубликовать',
+  SENDING: 'Публикую...',
+};
 
 const imgUploadInput = imgUploadForm.querySelector('.img-upload__input');
 const imgUploadOverlay = imgUploadForm.querySelector('.img-upload__overlay');
 const imgUploadCancel = imgUploadForm.querySelector('.img-upload__cancel');
 const submitButton = imgUploadForm.querySelector('#upload-submit');
 
+let isMessageOpen = false;
+
 const showMessage = (templateId, closeButtonSelector) => {
-  const template = document.querySelector(templateId).content.querySelector(templateId.slice(1));
+  const template = document.querySelector(templateId).content.querySelector(`.${templateId.slice(1)}`);
   const message = template.cloneNode(true);
   const closeButton = message.querySelector(closeButtonSelector);
 
-  const removeMessage = () => {
-    message.remove();
-    document.removeEventListener('keydown', onEscPress);
+  const onDocumentClick = (evt) => {
+    if (evt.target === message) {
+      removeMessage();
+    }
   };
 
-  function onEscPress(evt) {
+  function removeMessage() {
+    isMessageOpen = false;
+
+    message.remove();
+    document.removeEventListener('keydown', onDocumentEscKeydown);
+    document.removeEventListener('click', onDocumentClick);
+  }
+
+  function onDocumentEscKeydown(evt) {
     if (isEscapeKey(evt)) {
+      evt.stopPropagation();
       removeMessage();
     }
   }
-
-  const onClickOutside = (evt) => {
-    if (!evt.target.closest(templateId.slice(1))) {
-      removeMessage();
-    }
-  };
 
   const onCloseButtonClick = () => {
     removeMessage();
   };
 
   closeButton.addEventListener('click', onCloseButtonClick);
-  document.addEventListener('keydown', onEscPress);
-  document.addEventListener('click', onClickOutside);
+  document.addEventListener('keydown', onDocumentEscKeydown);
+  document.addEventListener('click', onDocumentClick);
 
   document.body.append(message);
+  isMessageOpen = true;
 };
 
 const showSuccessMessage = () => showMessage('#success', '.success__button');
 const showErrorMessage = () => showMessage('#error', '.error__button');
 
 const onDocumentEscPress = (evt) => {
+  if (isMessageOpen) {
+    return;
+  }
+
   if (isEscapeKey(evt)) {
     if (document.activeElement === hashtagInput || document.activeElement === commentInput) {
       evt.stopPropagation();
@@ -56,9 +72,17 @@ const onDocumentEscPress = (evt) => {
   }
 };
 
-function onImgUploadCancelClick() {
+const onImgUploadCancelClick = () => {
   closeImgUpload();
-}
+};
+
+const onImgUploadChange = () => {
+  imgUploadCancel.addEventListener('click', onImgUploadCancelClick);
+  document.addEventListener('keydown', onDocumentEscPress);
+
+  imgUploadOverlay.classList.remove('hidden');
+  document.body.classList.add('modal-open');
+};
 
 function closeImgUpload() {
   imgUploadCancel.removeEventListener('click', onImgUploadCancelClick);
@@ -72,38 +96,32 @@ function closeImgUpload() {
   pristine.reset();
 }
 
-function onImgUploadChange() {
-  imgUploadCancel.addEventListener('click', onImgUploadCancelClick);
-  document.addEventListener('keydown', onDocumentEscPress);
-
-  imgUploadOverlay.classList.remove('hidden');
-  document.body.classList.add('modal-open');
-}
-
 imgUploadInput.addEventListener('change', onImgUploadChange);
 
-const toggleSubmitButton = (state) => {
-  submitButton.disabled = state;
+const toggleSubmitButton = (isSending) => {
+  submitButton.disabled = isSending;
+  submitButton.textContent = isSending ? SubmitButtonText.SENDING : SubmitButtonText.IDLE;
 };
 
-imgUploadForm.addEventListener('submit', (evt) => {
+imgUploadForm.addEventListener('submit', async (evt) => {
   evt.preventDefault();
 
-  if (!pristine.validate()) {
-    return;
-  }
+  if (pristine.validate()) {
+    toggleSubmitButton(true);
 
-  toggleSubmitButton(true);
-  const formData = new FormData(evt.target);
-  sendData(formData)
-    .then(() => {
+    const formData = new FormData(evt.target);
+
+    try {
+      await sendData(formData);
       closeImgUpload();
       showSuccessMessage();
-    })
-    .catch(() => {
+    } catch (error) {
+      window.console.error('Ошибка при отправке данных', error.message);
       showErrorMessage();
-    })
-    .finally(() => {
+    } finally {
       toggleSubmitButton(false);
-    });
+    }
+  }
 });
+
+export { showSuccessMessage };
