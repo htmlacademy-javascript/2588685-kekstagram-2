@@ -1,11 +1,11 @@
 import { clearComments, renderComments } from './render-comments.js';
+import { isEscapeKey } from './utils.js';
+import { picturesContainer } from './render-thumbnails.js';
 
 const bigPictureContainer = document.querySelector('.big-picture');
 const bigPictureCancelButton = bigPictureContainer.querySelector('.big-picture__cancel');
 
 let photosData = [];
-
-const isEscapeKey = (evt) => evt.key === 'Escape';
 
 const onBigPictureCancelClick = () => {
   closeBigPicture();
@@ -49,5 +49,14 @@ const openBigPicture = (pictureId) => {
   bigPictureCancelButton.addEventListener('click', onBigPictureCancelClick);
   document.addEventListener('keydown', onDocumentEscKeydown);
 };
+
+picturesContainer.addEventListener('click', (evt) => {
+  const currentPicture = evt.target.closest('.picture');
+
+  if (currentPicture) {
+    evt.preventDefault();
+    openBigPicture(currentPicture.dataset.id);
+  }
+});
 
 export { openBigPicture, setPhotos };

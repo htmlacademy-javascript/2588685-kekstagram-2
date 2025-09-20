@@ -1,17 +1,17 @@
 import { resetEdition } from './edit-picture.js';
 import { sendData } from './api.js';
 import { pristine, imgUploadForm, hashtagInput, commentInput } from './validate-form.js';
+import { isEscapeKey } from './utils.js';
 
 const SubmitButtonText = {
   IDLE: 'Опубликовать',
   SENDING: 'Публикую...',
 };
+
 const imgUploadInput = imgUploadForm.querySelector('.img-upload__input');
 const imgUploadOverlay = imgUploadForm.querySelector('.img-upload__overlay');
 const imgUploadCancel = imgUploadForm.querySelector('.img-upload__cancel');
 const submitButton = imgUploadForm.querySelector('#upload-submit');
-
-const isEscapeKey = (evt) => evt.key === 'Escape';
 
 let isMessageOpen = false;
 
@@ -103,48 +103,24 @@ const toggleSubmitButton = (isSending) => {
   submitButton.textContent = isSending ? SubmitButtonText.SENDING : SubmitButtonText.IDLE;
 };
 
-/* imgUploadForm.addEventListener('submit', (evt) => {
-  evt.preventDefault();
-
-  if (!pristine.validate()) {
-    return;
-  }
-
-  toggleSubmitButton(true);
-  const formData = new FormData(evt.target);
-  sendData(formData)
-    .then(() => {
-      showSuccessMessage();
-      closeImgUpload();
-    })
-    .catch(() => {
-      showErrorMessage();
-    })
-    .finally(() => {
-      toggleSubmitButton(false);
-    });
-});
-*/
-
 imgUploadForm.addEventListener('submit', async (evt) => {
   evt.preventDefault();
 
-  if (!pristine.validate()) {
-    return;
-  }
+  if (pristine.validate()) {
+    toggleSubmitButton(true);
 
-  toggleSubmitButton(true);
-  const formData = new FormData(evt.target);
+    const formData = new FormData(evt.target);
 
-  try {
-    await sendData(formData);
-    closeImgUpload();
-    showSuccessMessage();
-  } catch (error) {
-    window.console.error('Ошибка при отправке данных', error.message);
-    showErrorMessage();
-  } finally {
-    toggleSubmitButton(false);
+    try {
+      await sendData(formData);
+      closeImgUpload();
+      showSuccessMessage();
+    } catch (error) {
+      window.console.error('Ошибка при отправке данных', error.message);
+      showErrorMessage();
+    } finally {
+      toggleSubmitButton(false);
+    }
   }
 });
 
