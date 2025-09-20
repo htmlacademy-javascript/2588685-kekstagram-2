@@ -1,4 +1,65 @@
-import { EFFECTS } from './data.js';
+const EFFECTS = {
+  none: {
+    filter: '',
+    range: {
+      min: 0,
+      max: 1,
+    },
+    start: 1,
+    step: 0.1,
+    unit: '',
+  },
+  chrome: {
+    filter: 'grayscale',
+    range: {
+      min: 0,
+      max: 1,
+    },
+    start: 1,
+    step: 0.1,
+    unit: '',
+  },
+  sepia: {
+    filter: 'sepia',
+    range: {
+      min: 0,
+      max: 1,
+    },
+    start: 1,
+    step: 0.1,
+    unit: '',
+  },
+  marvin: {
+    filter: 'invert',
+    range: {
+      min: 0,
+      max: 100,
+    },
+    start: 100,
+    step: 1,
+    unit: '%',
+  },
+  phobos: {
+    filter: 'blur',
+    range: {
+      min: 0,
+      max: 3,
+    },
+    start: 3,
+    step: 0.1,
+    unit: 'px',
+  },
+  heat: {
+    filter: 'brightness',
+    range: {
+      min: 1,
+      max: 3,
+    },
+    start: 3,
+    step: 0.1,
+    unit: '',
+  },
+};
 
 const SCALE_STEP = 0.25;
 const MAX_SCALE = 1;
@@ -16,7 +77,13 @@ const effectLevelValue = effectLevelContainer.querySelector('.effect-level__valu
 const effectRadio = document.querySelectorAll('.effects__radio');
 
 let imgScale = DEFAULT_SCALE;
-let currentEffectHandler = null;
+let effect = EFFECTS['none'];
+
+const currentEffectHandler = () => {
+  const value = effectSlider.noUiSlider.get();
+  effectLevelValue.value = value;
+  imgPreview.style.filter = `${effect.filter}(${value}${effect.unit})`;
+};
 
 const resetEdition = () => {
   scaleInput.value = `${imgScale * 100}%`;
@@ -63,11 +130,14 @@ noUiSlider.create(effectSlider, {
   },
 });
 
-const applyEffect = (effectName) => {
-  const effect = EFFECTS[effectName];
+effectSlider.noUiSlider.on('update', currentEffectHandler);
 
-  if (!effect || effectName === 'none') {
+const onEffectChange = (evt) => {
+  effect = EFFECTS[evt.target.value];
+
+  if (!effect || evt.target.value === 'none') {
     imgPreview.style.filter = 'none';
+    effectLevelValue.value = '';
     effectLevelContainer.classList.add('hidden');
     return;
   }
@@ -79,24 +149,8 @@ const applyEffect = (effectName) => {
   });
 
   effectLevelContainer.classList.remove('hidden');
-
-  effectSlider.noUiSlider.off('update');
-
-  currentEffectHandler = () => {
-    const value = effectSlider.noUiSlider.get();
-    effectLevelValue.value = value;
-    imgPreview.style.filter = `${effect.filter}(${value}${effect.unit})`;
-  };
-
-  effectSlider.noUiSlider.on('update', currentEffectHandler);
-
   imgPreview.style.filter = `${effect.filter}(${effect.start}${effect.unit})`;
   effectLevelValue.value = effect.start;
-};
-
-const onEffectChange = (evt) => {
-  const effectName = evt.target.value;
-  applyEffect(effectName);
 };
 
 effectRadio.forEach((radioButton) => {
@@ -104,34 +158,3 @@ effectRadio.forEach((radioButton) => {
 });
 
 export { resetEdition };
-
-/*
-С помощью библиотеки noUiSlider (скрипт и стили находятся в директории /vendor/nouislider) реализуйте
-применение эффекта для изображения. Кроме визуального применения эффекта необходимо
-записывать значение в скрытое поле для дальнейшей отправки на сервер.
-
-Наложение эффекта на изображение:
-
-По умолчанию должен быть выбран эффект «Оригинал».
-На изображение может накладываться только один эффект.
-Интенсивность эффекта регулируется перемещением ползунка в слайдере.
-Слайдер реализуется сторонней библиотекой для реализации слайдеров noUiSlider.
-Уровень эффекта записывается в поле .effect-level__value в виде числа.
-При изменении уровня интенсивности эффекта (предоставляется API слайдера),
-CSS-стили картинки внутри .img-upload__preview обновляются следующим образом:
-
-Для эффекта «Хром» — filter: grayscale(0..1) с шагом 0.1;
-Для эффекта «Сепия» — filter: sepia(0..1) с шагом 0.1;
-Для эффекта «Марвин» — filter: invert(0..100%) с шагом 1%;
-Для эффекта «Фобос» — filter: blur(0..3px) с шагом 0.1px;
-Для эффекта «Зной» — filter: brightness(1..3) с шагом 0.1;
-Для эффекта «Оригинал» CSS-стили filter удаляются.
-
-При выборе эффекта «Оригинал» слайдер и его контейнер (элемент .img-upload__effect-level) скрываются.
-При переключении эффектов, уровень насыщенности сбрасывается до начального значения (100%):
-слайдер, CSS-стиль изображения и значение поля должны обновляться.
-
-Обратите внимание, что при переключении фильтра, уровень эффекта должен сразу сбрасываться до начального состояния,
-т. е. логика по определению уровня насыщенности должна срабатывать не только при «перемещении» слайдера,
-но и при переключении фильтров.
-*/

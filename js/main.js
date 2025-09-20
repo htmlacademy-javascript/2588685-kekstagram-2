@@ -1,16 +1,19 @@
-import { photos } from './generate-photos.js';
-import { openBigPicture } from './render-big-pictures.js';
-import { picturesContainer, renderPictures } from './render-thumbnails.js';
+import { getData, showDataError } from './api.js';
+import { setPhotos } from './render-big-pictures.js';
+import { renderPictures } from './render-thumbnails.js';
 import './validate-form.js';
+import './handle-form.js';
 import './edit-picture.js';
 
-renderPictures(photos);
-
-picturesContainer.addEventListener('click', (evt) => {
-  const currentPicture = evt.target.closest('.picture');
-
-  if (currentPicture) {
-    evt.preventDefault();
-    openBigPicture(currentPicture.dataset.id);
+const init = async () => {
+  try {
+    const photos = await getData();
+    renderPictures(photos);
+    setPhotos(photos);
+  } catch (error) {
+    window.console.error('Ошибка при загрузке данных:', error.message);
+    showDataError();
   }
-});
+};
+
+init();

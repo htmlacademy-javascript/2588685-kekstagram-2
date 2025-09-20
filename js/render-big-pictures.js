@@ -1,9 +1,11 @@
-import { photos } from './generate-photos.js';
-import { clearComments, renderComments } from './render-commets.js';
+import { clearComments, renderComments } from './render-comments.js';
 import { isEscapeKey } from './utils.js';
+import { picturesContainer } from './render-thumbnails.js';
 
 const bigPictureContainer = document.querySelector('.big-picture');
-const bigPictureCancel = bigPictureContainer.querySelector('.big-picture__cancel');
+const bigPictureCancelButton = bigPictureContainer.querySelector('.big-picture__cancel');
+
+let photosData = [];
 
 const onBigPictureCancelClick = () => {
   closeBigPicture();
@@ -21,12 +23,20 @@ function closeBigPicture() {
 
   bigPictureContainer.classList.add('hidden');
   document.body.classList.remove('modal-open');
-  bigPictureCancel.removeEventListener('click', onBigPictureCancelClick);
+  bigPictureCancelButton.removeEventListener('click', onBigPictureCancelClick);
   document.removeEventListener('keydown', onDocumentEscKeydown);
 }
 
-function openBigPicture(pictureId) {
-  const currentPhoto = photos.find((photo) => photo.id === Number(pictureId));
+const setPhotos = (photos) => {
+  photosData = photos;
+};
+
+const openBigPicture = (pictureId) => {
+  const currentPhoto = photosData.find((photo) => photo.id === Number(pictureId));
+
+  if (!currentPhoto) {
+    return;
+  }
 
   bigPictureContainer.querySelector('.big-picture__img img').src = currentPhoto.url;
   bigPictureContainer.querySelector('.likes-count').textContent = currentPhoto.likes;
@@ -36,8 +46,17 @@ function openBigPicture(pictureId) {
 
   bigPictureContainer.classList.remove('hidden');
   document.body.classList.add('modal-open');
-  bigPictureCancel.addEventListener('click', onBigPictureCancelClick);
+  bigPictureCancelButton.addEventListener('click', onBigPictureCancelClick);
   document.addEventListener('keydown', onDocumentEscKeydown);
-}
+};
 
-export { openBigPicture };
+picturesContainer.addEventListener('click', (evt) => {
+  const currentPicture = evt.target.closest('.picture');
+
+  if (currentPicture) {
+    evt.preventDefault();
+    openBigPicture(currentPicture.dataset.id);
+  }
+});
+
+export { openBigPicture, setPhotos };
