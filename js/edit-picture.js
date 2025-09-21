@@ -74,7 +74,7 @@ const imgPreview = document.querySelector('.img-upload__preview img');
 const effectLevelContainer = document.querySelector('.img-upload__effect-level');
 const effectSlider = effectLevelContainer.querySelector('.effect-level__slider');
 const effectLevelValue = effectLevelContainer.querySelector('.effect-level__value');
-const effectRadio = document.querySelectorAll('.effects__radio');
+const effectRadioButtons = document.querySelectorAll('.effects__radio');
 
 let imgScale = DEFAULT_SCALE;
 let effect = EFFECTS['none'];
@@ -86,10 +86,9 @@ const currentEffectHandler = () => {
 };
 
 const resetEdition = () => {
-  scaleInput.value = `${imgScale * 100}%`;
-
   imgScale = DEFAULT_SCALE;
   imgPreview.style.transform = `scale(${imgScale})`;
+  scaleInput.value = `${imgScale * 100}%`;
 
   imgPreview.style.filter = 'none';
   effectLevelContainer.classList.add('hidden');
@@ -153,7 +152,7 @@ const onEffectChange = (evt) => {
   effectLevelValue.value = effect.start;
 };
 
-effectRadio.forEach((radioButton) => {
+effectRadioButtons.forEach((radioButton) => {
   radioButton.addEventListener('change', onEffectChange);
 });
 

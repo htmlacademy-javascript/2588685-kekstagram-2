@@ -13,7 +13,7 @@ const updatePhotos = (photos) => {
   renderPictures(photos);
 };
 
-const getRandomArray = (array) => array.slice().sort(() => Math.random() - 0.5);
+const getRandomArray = (photos) => photos.slice().sort(() => Math.random() - 0.5);
 
 const sortByComments = (a, b) => b.comments.length - a.comments.length;
 
