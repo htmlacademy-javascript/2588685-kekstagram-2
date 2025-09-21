@@ -1,7 +1,7 @@
 const templateForThumbnails = document.querySelector('#picture').content.querySelector('.picture');
 const picturesContainer = document.querySelector('.pictures');
 
-const renderPictures = function (pictures) {
+const renderPictures = (pictures) => {
   const thumbnailsFragment = document.createDocumentFragment();
 
   pictures.forEach(({ id, url, description, likes, comments }) => {

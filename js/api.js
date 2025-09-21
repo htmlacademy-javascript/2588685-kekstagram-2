@@ -13,6 +13,8 @@ const ErrorText = {
   SEND_DATA: 'Не удалось отправить форму. Попробуйте ещё раз',
 };
 
+const MESSAGE_DELAY = 5000;
+
 const showDataError = () => {
   const errorTemplate = document.querySelector('#data-error').content.querySelector('.data-error');
   const errorMessage = errorTemplate.cloneNode(true);
@@ -21,7 +23,7 @@ const showDataError = () => {
 
   setTimeout(() => {
     errorMessage.remove();
-  }, 5000);
+  }, MESSAGE_DELAY);
 };
 
 const load = async (route, errorText, method = Method.GET, body = null) => {
@@ -31,7 +33,6 @@ const load = async (route, errorText, method = Method.GET, body = null) => {
     if (!response.ok) {
       throw new Error(errorText);
     }
-
     return await response.json();
   } catch (err) {
     throw new Error(errorText);

@@ -2,6 +2,7 @@ import { resetEdition } from './edit-picture.js';
 import { sendData } from './api.js';
 import { pristine, imgUploadForm, hashtagInput, commentInput } from './validate-form.js';
 import { isEscapeKey } from './utils.js';
+import { resetPreview } from './form-img-upload.js';
 
 const SubmitButtonText = {
   IDLE: 'Опубликовать',
@@ -93,6 +94,7 @@ function closeImgUpload() {
 
   imgUploadInput.value = '';
   resetEdition();
+  resetPreview();
   pristine.reset();
 }
 
