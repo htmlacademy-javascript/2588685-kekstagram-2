@@ -2,6 +2,7 @@ import { renderPictures, picturesContainer } from './render-thumbnails.js';
 import { debounce } from './utils.js';
 
 const RANDOM_PHOTOS_COUNT = 10;
+const RENDER_DELAY = 500;
 
 const filtersContainer = document.querySelector('.img-filters');
 
@@ -34,7 +35,7 @@ const applyFilter = debounce((filterId) => {
   }
 
   updatePhotos(filteredPhotos);
-}, 500);
+}, RENDER_DELAY);
 
 const onFilterClick = (evt) => {
   const activeButton = filtersContainer.querySelector('.img-filters__button--active');
