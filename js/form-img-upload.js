@@ -1,4 +1,5 @@
 import { imgPreview } from './edit-picture.js';
+
 const FILE_TYPES = ['jpg', 'jpeg', 'png'];
 
 const fileInput = document.querySelector('.img-upload__input');

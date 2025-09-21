@@ -1,6 +1,5 @@
 const MAX_HASHTAGS = 5;
 const MAX_SYMBOLS = 20;
-let errorMessage = '';
 
 const hashtagRules = [
   {
@@ -38,6 +37,8 @@ const hashtagRules = [
     message: `Нельзя указывать больше ${MAX_HASHTAGS} хэштегов`,
   },
 ];
+
+let errorMessage = '';
 
 const validateHashtags = (value) => {
   const hashtags = value.trim().split(/\s+/).filter((tag) => tag.length > 0).map((tag) => tag.toLowerCase());
