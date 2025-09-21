@@ -157,4 +157,4 @@ effectRadio.forEach((radioButton) => {
   radioButton.addEventListener('change', onEffectChange);
 });
 
-export { resetEdition };
+export { resetEdition, imgPreview };

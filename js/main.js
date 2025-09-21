@@ -5,6 +5,7 @@ import { initFilters } from './filters.js';
 import './validate-form.js';
 import './handle-form.js';
 import './edit-picture.js';
+import './form-img-upload.js';
 
 const init = async () => {
   try {
