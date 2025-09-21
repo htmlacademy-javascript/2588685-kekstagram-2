@@ -14,13 +14,13 @@ const onFileInputChange = () => {
   }
 
   const fileName = file.name.toLowerCase();
-  const matches = FILE_TYPES.some((it) => fileName.endsWith(it));
+  const matches = FILE_TYPES.some((item) => fileName.endsWith(item));
 
   if (matches) {
-    imgPreview.src = URL.createObjectURL(file);
-
+    const imgUrl = URL.createObjectURL(file);
+    imgPreview.src = imgUrl;
     effectPreviews.forEach((preview) => {
-      preview.style.backgroundImage = `url(${imgPreview.src})`;
+      preview.style.backgroundImage = `url(${imgUrl})`;
     });
   }
 };
