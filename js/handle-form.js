@@ -57,6 +57,7 @@ const showMessage = (templateId, closeButtonSelector) => {
 const showSuccessMessage = () => showMessage('#success', '.success__button');
 const showErrorMessage = () => showMessage('#error', '.error__button');
 
+
 const onDocumentEscPress = (evt) => {
   if (isMessageOpen) {
     return;
@@ -96,6 +97,8 @@ function closeImgUpload() {
   resetEdition();
   resetPreview();
   pristine.reset();
+  hashtagInput.value = '';
+  commentInput.value = '';
 }
 
 imgUploadInput.addEventListener('change', onImgUploadChange);
@@ -125,5 +128,3 @@ imgUploadForm.addEventListener('submit', async (evt) => {
     }
   }
 });
-
-export { showSuccessMessage };
